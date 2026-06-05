@@ -1,0 +1,1 @@
+FROM node:18-alpine AS builder\n\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nRUN npm run build\n\nFROM node:18-alpine\n\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install --only=production\nCOPY --from=builder /app/.next ./.next\nCOPY --from=builder /app/public ./public\nCOPY --from=builder /app/next.config.js ./\n\nEXPOSE 3000\n\nCMD [\"npm\", \"start\"]
